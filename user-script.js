@@ -19,6 +19,15 @@
   let singleDownloads = 0;
   const coverCache = new Map();
   const busyButtons = new WeakSet();
+  const trackEmojis = ('😀 😃 😄 😁 😆 😅 😂 🤣 😊 😇 🙂 🙃 😉 😌 😍 🥰 😘 😋 😛 😜 🤪 😎 🤩 🥳 😏 🤓 🧐 🤠 🥸 🤯 😱 🥶 🥵 😴 🤤 🫠 🫡 🤗 👻 👽 👾 🤖 💩 🎃 😺 😸 😻 🙈 🙉 🙊 '
+    + '🐶 🐱 🐭 🐹 🐰 🦊 🐻 🐼 🐨 🐯 🦁 🐮 🐷 🐸 🐵 🦄 🐔 🐧 🐦 🦆 🦉 🦇 🐺 🐗 🐴 🐝 🐛 🦋 🐌 🐞 🐜 🕷 🦂 🐢 🐍 🦎 🦖 🦕 🐙 🦑 🦀 🦞 🦐 🐠 🐡 🦈 🐬 🐳 🐋 🦭 🐊 🐘 🦒 🦓 🦍 🦧 🦥 🦦 🦔 🐿 🦚 🦜 🦩 '
+    + '🌵 🎄 🌲 🌳 🌴 🌱 🌿 ☘ 🍀 🍁 🍄 🌷 🌹 🌺 🌸 🌼 🌻 🌞 🌝 🌚 🌙 🌈 ⭐ 🌟 ✨ ⚡ 🔥 💥 ❄ ☃ ⛄ 🌊 💧 🌪 🌋 🌍 🪐 ☄ '
+    + '🍏 🍎 🍐 🍊 🍋 🍌 🍉 🍇 🍓 🫐 🍈 🍒 🍑 🥭 🍍 🥥 🥝 🍅 🍆 🥑 🥦 🥒 🌶 🌽 🥕 🧄 🧅 🥔 🍠 🥐 🥯 🍞 🥖 🥨 🧀 🥚 🍳 🥞 🧇 🥓 🍔 🍟 🍕 🌭 🥪 🌮 🌯 🥙 🧆 🍜 🍝 🍣 🍤 🍙 🥟 🍦 🍩 🍪 🎂 🍰 🧁 🍫 🍬 🍭 🍿 🍯 ☕ 🧋 🍵 🧃 🍹 🍺 🥂 '
+    + '⚽ 🏀 🏈 ⚾ 🎾 🏐 🏉 🎱 🏓 🏸 🏒 🥊 🥋 🛹 🛼 ⛸ 🎿 🏂 🏆 🥇 🎯 🎳 🎮 🕹 🎲 🧩 ♟ 🎨 🎭 🎪 🎤 🎧 🎼 🎹 🥁 🎷 🎺 🎸 🪕 🎻 '
+    + '🚗 🚕 🚌 🏎 🚓 🚑 🚒 🚜 🛵 🏍 🚲 🛴 🚂 🚆 🚁 ✈ 🛸 🚀 🛰 ⛵ 🚢 ⚓ 🗺 🗿 🗽 🗼 🏰 🎡 🎢 🎠 ⛺ 🏖 🏝 🏔 🏠 🏡 🏙 '
+    + '⌚ 📱 💻 ⌨ 🖥 🖨 🖱 💾 💿 📷 🎥 📺 📻 🧭 ⏰ ⏳ 💡 🔦 🕯 💎 🔮 🧿 🪄 🧸 🪆 🎈 🎉 🎊 🎁 🎀 🪅 🪩 🛍 📚 📖 📝 ✏ 🖌 🔍 🔑 🔐 🔨 🪛 🔧 ⚙ 🧲 🧪 🧬 🔬 🔭 🩺 💊 🛁 🧼 🪥 🧹 🧺 '
+    + '❤ 🧡 💛 💚 💙 💜 🖤 🤍 🤎 💖 💗 💓 💞 💕 💘 💝 💯 ✅ ❎ ❗ ❓ ♻ ☮ ☯ ♾ 💫 💤 💦 🫧 👑 🎩 🧢 🕶 👓 👟 👠 👢 🧤 🧣 🎒 💪 👏 🙌 👍 ✌ 🤟 🤘 🤙 👌 🫶').split(/\s+/u);
+  const randomTrackEmoji = () => trackEmojis[Math.floor(Math.random() * trackEmojis.length)];
   const downloadIcon = '<svg data-zaycev-icon="download" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 17v4h14v-4"/></svg>';
   const style = document.createElement('style');
   style.textContent = `
@@ -317,7 +326,9 @@
     const start = document.createElement('button');
     start.textContent = '🎧 Скачать все треки исполнителя';
     const count = document.createElement('select');
-    for (const n of [1, 2, 3]) count.add(new Option(`${n} одновременно`, String(n)));
+    for (const n of [1, 2, 3, 4, 5]) count.add(new Option(`${n} одновременно`, String(n)));
+    count.setAttribute('aria-label', 'Число одновременных загрузок');
+    count.title = 'Изменение применяется со следующей пачки';
     const stop = document.createElement('button');
     stop.textContent = 'Остановить';
     stop.disabled = true;
@@ -338,7 +349,7 @@
       tracks.forEach((track, index) => {
         const pill = document.createElement('span');
         pill.className = 'zaycev-bulk-track';
-        pill.textContent = `🚀 ${track.artistName} — ${track.track}`;
+        pill.textContent = `${randomTrackEmoji()} ${track.artistName} — ${track.track}`;
         pill.title = pill.textContent;
         pill.style.animationDelay = `${index * 120}ms`;
         bubbles.append(pill);
@@ -362,7 +373,7 @@
       status.title = '';
       progress.removeAttribute('value');
       bubbles.replaceChildren();
-      start.disabled = count.disabled = true;
+      start.disabled = true;
       stop.disabled = false;
       let saved = 0, failed = 0, skipped = 0;
       const errors = [];
@@ -387,7 +398,8 @@
           if (!track.playbackEnabled || track.isPreview || track.rejected) { skipped++; return false; }
           return true;
         });
-        const parallel = Number(count.value);
+        let next = 0;
+        const limit = () => Math.max(1, Math.min(5, Number(count.value) || 1));
         const update = () => {
           status.textContent = `🎵 В коллекцию: ${saved}/${queue.length} · Ошибок: ${failed} · Пропущено: ${skipped}`;
           progress.max = Math.max(1, queue.length);
@@ -396,11 +408,7 @@
           setProgressTitle(job, `${saved}/${queue.length}`);
         };
         update();
-        for (let i = 0; i < queue.length && !job.stop; i += parallel) {
-          update();
-          const batch = queue.slice(i, i + parallel);
-          showBatch(batch);
-          await Promise.all(batch.map(async track => {
+        const runTrack = async track => {
             try {
               await downloadTrack(Number(track.id), `${track.artistName} - ${track.track}`, job);
               completed.add(Number(track.id));
@@ -413,9 +421,14 @@
               }
             }
             update();
-          }));
-          // Пауза между партиями, никаких автоматических повторов ошибок.
-          if (i + parallel < queue.length && !job.stop) await sleep(5000);
+        };
+        while (next < queue.length && !job.stop) {
+          // Читаем выбранный лимит только при формировании следующей пачки.
+          const batch = queue.slice(next, next + limit());
+          next += batch.length;
+          showBatch(batch);
+          await Promise.all(batch.map(runTrack));
+          if (next < queue.length && !job.stop) await sleep(5000);
         }
         update();
         status.textContent += job.stop ? ' · ⏸ Очередь остановлена' : failed ? ' · 🏁 Завершено с ошибками' : ' · 🎉 Готово!';
@@ -431,7 +444,7 @@
         bulkJob = null;
         document.title = job.originalTitle;
         updateUnloadWarning();
-        start.disabled = count.disabled = false;
+        start.disabled = false;
         stop.disabled = true;
         start.textContent = '🎧 Скачать оставшиеся треки';
       }
